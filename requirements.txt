@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+jose
+requests
+databases
+asyncpg
+python-dotenv
