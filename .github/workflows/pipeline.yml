@@ -49,14 +49,14 @@ jobs:
           pip install awsebcli
 
       - name: Deploy to AWS Elastic Beanstalk
-  env:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    KEYCLOAK_JWKS_URL: ${{ secrets.KEYCLOAK_JWKS_URL }}
-  run: |
-    eb init fastapi-pydantic-app-v.0.0.1 --platform docker --region us-west-2
-    eb create fastapi-pydantic-v.0.0.1 || true
-    eb use fastapi-pydantic-v.0.0.1
-    eb setenv DOCKER_APP_IMAGE=pydantic/feature-management:latest DATABASE_URL=$DATABASE_URL KEYCLOAK_JWKS_URL=$KEYCLOAK_JWKS_URL
-    eb deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          KEYCLOAK_JWKS_URL: ${{ secrets.KEYCLOAK_JWKS_URL }}
+        run: |
+          eb init fastapi-pydantic-app-v.0.0.1 --platform docker --region us-west-2
+          eb create fastapi-pydantic-v.0.0.1 || true
+          eb use fastapi-pydantic-v.0.0.1
+          eb setenv DOCKER_APP_IMAGE=pydantic/feature-management:latest DATABASE_URL=$DATABASE_URL KEYCLOAK_JWKS_URL=$KEYCLOAK_JWKS_URL
+          eb deploy
