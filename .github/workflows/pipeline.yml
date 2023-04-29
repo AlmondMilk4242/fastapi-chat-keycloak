@@ -28,7 +28,7 @@ jobs:
         context: .
         file: Dockerfile
         push: true
-        tags: your-dockerhub-organization/your-repo-name:latest
+        tags: pydantic/feature-management:latest
 
   deploy_to_aws_beanstalk:
     runs-on: ubuntu-latest
@@ -52,5 +52,5 @@ jobs:
       run: |
         eb init your-app-name --platform docker --region your-aws-region
         eb use your-environment-name
-        eb setenv DOCKER_APP_IMAGE=your-dockerhub-organization/your-repo-name:latest
+        eb setenv DOCKER_APP_IMAGE=pydantic/feature-management:latest
         eb deploy
