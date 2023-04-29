@@ -1,6 +1,17 @@
+# Caching Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-.env
+# Environment Files
+.venv/
+venv/
+*.env
+
+# Elastic Beanstalk
+.elasticbeanstalk/
+
+# Ignore Docker Files
+Dockerfile
+Dockerrun.aws.json

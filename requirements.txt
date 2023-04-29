@@ -1,7 +1,9 @@
 fastapi
 uvicorn
-jose
+python-jose[cryptography]
 requests
 databases
 asyncpg
 python-dotenv
+sqlalchemy
+psycopg2-binary

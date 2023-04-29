@@ -13,8 +13,8 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 # Make port 80 available to the world outside this container
 EXPOSE 80
 
-# Remove the .env file if it exists
-RUN rm -f .env
+# Copy environment variables file to the container
+COPY .env ./
 
 # Run app.py when the container launches
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
