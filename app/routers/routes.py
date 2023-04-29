@@ -1,7 +1,7 @@
 # app/routes.py
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.models import get_all_kanban_boxes, get_user_kanban_boxes
+from app.models.kanban_box import get_all_kanban_boxes, get_user_kanban_boxes
 from app.security import get_current_user
 from app.database import SessionLocal
 import uuid
