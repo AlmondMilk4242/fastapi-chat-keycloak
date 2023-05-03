@@ -10,6 +10,12 @@ This is a Python FastAPI backend for a chat system. It includes the following fe
 2. Install the dependencies with `pip install -r requirements.txt`.
 3. Run the server with `uvicorn main:app --reload`.
 
+## Starting a Keycloak Instance Using Docker
+1. Install [Docker](https://docs.docker.com/get-docker/) on your machine.
+2. Pull the Keycloak image by running `docker pull jboss/keycloak`.
+3. Run Keycloak in a container by running `docker run -p 8080:8080 jboss/keycloak`.
+4. Access the Keycloak Admin Console at [http://localhost:8080/auth/admin](http://localhost:8080/auth/admin).
+
 ## API Endpoints
 - `/threads` (POST): Create a new thread between two users.
 - `/threads` (GET): Get all threads for a user.
@@ -25,12 +31,6 @@ This is a Python FastAPI backend for a chat system. It includes the following fe
 - `app/service/chat.py`: CRUD functions for threads and messages.
 - `app/routers/chat.py`: API endpoints for threads and messages.
 - `main.py`: FastAPI application startup and configuration.
-
-## Starting a Keycloak Instance Using Docker
-1. Install [Docker](https://docs.docker.com/get-docker/) on your machine.
-2. Pull the Keycloak image by running `docker pull jboss/keycloak`.
-3. Run Keycloak in a container by running `docker run -p 8080:8080 jboss/keycloak`.
-4. Access the Keycloak Admin Console at [http://localhost:8080/auth/admin](http://localhost:8080/auth/admin).
 
 ## Setting Environment Variables
 To use this project, you will need to set the following environment variables in a `.env` file located in the project directory:
