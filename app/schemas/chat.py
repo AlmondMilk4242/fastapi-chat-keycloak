@@ -2,6 +2,9 @@
 from pydantic import BaseModel, UUID4
 from typing import List
 from uuid import uuid4
+from uuid import UUID
+from datetime import datetime
+from ..models.chat import Message as MessageModel
 
 class ThreadOut(BaseModel):
     id: UUID4
@@ -22,15 +25,22 @@ class MessageCreate(BaseModel):
     thread_id: UUID4
     content: str
 
-class Message(MessageCreate):
-    id: UUID4 = uuid4()
+class Message(BaseModel):
+    id: UUID
+    thread_id: UUID
+    content: str
+    sender_id: str
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
 
     @classmethod
-    def from_model(cls, message_model):
+    def from_model(cls, model: MessageModel) -> "Message":
         return cls(
-            id=message_model.id,
-            thread_id=message_model.thread_id,
-            content=message_model.content,
+            id=model.id,
+            thread_id=model.thread_id,
+            content=model.content,
+            sender_id=model.sender_id,
+            timestamp=model.timestamp,
         )
-
-

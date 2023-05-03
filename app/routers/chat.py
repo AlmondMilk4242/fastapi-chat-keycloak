@@ -43,10 +43,10 @@ async def delete_thread_endpoint(thread_id: UUID, token: dict = Depends(authenti
     raise HTTPException(status_code=403, detail="Unauthorized to delete thread")
 
 @router.post("/messages", response_model=Message)
-async def send_message(message: MessageCreate, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
-    sender_id = token["sub"]
-    new_message = create_message(db, message, sender_id)
-    return Message.from_model(new_message)
+async def create_message_endpoint(message: MessageCreate, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
+    user_id = token["sub"]
+    message_model = create_message(db, message, user_id)
+    return Message.from_model(message_model)
 
 @router.get("/messages/{thread_id}", response_model=List[Message])
 async def get_messages_endpoint(thread_id: UUID, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):

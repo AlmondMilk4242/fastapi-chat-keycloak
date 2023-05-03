@@ -26,15 +26,11 @@ def delete_thread(db: Session, thread_id: UUID, user_id: str):
     return False
 
 def create_message(db: Session, message: MessageCreate, sender_id: str):
-    message_in_db = MessageModel(
-        thread_id=message.thread_id,
-        sender_id=sender_id,
-        content=message.content,
-    )
-    db.add(message_in_db)
+    message_model = MessageModel(sender_id=sender_id, **message.dict())
+    db.add(message_model)
     db.commit()
-    db.refresh(message_in_db)
-    return message_in_db
+    db.refresh(message_model)
+    return message_model
 
 
 def get_messages(db: Session, thread_id: UUID, user_id: str):
