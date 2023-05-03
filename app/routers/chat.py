@@ -1,14 +1,13 @@
 # app/routers/chat.py
 from app.database import SessionLocal
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from uuid import UUID
 from ..auth.auth import authenticate_user
 from ..models.chat import Thread, Message
-from ..schemas.chat import ThreadCreate, Thread, MessageCreate, Message
-from ..service.chat.chat import create_thread
-
+from ..schemas.chat import ThreadCreate, ThreadOut, MessageCreate, Message
+from ..service.chat.chat import create_thread, get_threads, delete_thread, create_message, get_messages
 
 
 # Add other necessary imports, e.g. for your database session management
@@ -23,36 +22,36 @@ def get_db():
         db.close()
 
 # Thread endpoints
-@router.post("/threads", response_model=Thread)
-async def create_thread(thread: ThreadCreate, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
-    # Get the authenticated user's Keycloak ID from the token
+@router.post("/threads", response_model=ThreadOut)
+async def create_thread_endpoint(thread: ThreadCreate, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
     user_id1 = token["sub"]
+    new_thread = create_thread(db, thread, user_id1)
+    return ThreadOut.from_model(new_thread)
 
-    # Create a new thread with the authenticated user's Keycloak ID and the other user's ID
-    new_thread = Thread(user_id1=user_id1, user_id2=thread.user_id2)
-
-    # Add logic to save the new thread to your database
-    # new_thread = create_thread(db, thread, user_id1)
-
-    return new_thread
-
-@router.get("/threads", response_model=List[Thread])
-async def get_threads(token: dict = Depends(authenticate_user)):
-    # Add logic to retrieve threads for the authenticated user based on their Keycloak ID
-    pass
+@router.get("/threads", response_model=List[ThreadOut])
+async def get_threads_endpoint(token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
+    user_id = token["sub"]
+    threads = await get_threads(db, user_id)
+    return [ThreadOut.from_model(thread) for thread in threads]
 
 @router.delete("/threads/{thread_id}")
-async def delete_thread(thread_id: UUID, token: dict = Depends(authenticate_user)):
-    # Add logic to delete a thread if the authenticated user is one of the participants (based on their Keycloak ID)
-    pass
+async def delete_thread_endpoint(thread_id: UUID, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
+    user_id = token["sub"]
+    deleted = delete_thread(db, thread_id, user_id)
+    if deleted:
+        return {"detail": "Thread deleted successfully"}
+    raise HTTPException(status_code=403, detail="Unauthorized to delete thread")
 
-# Message endpoints
 @router.post("/messages", response_model=Message)
-async def send_message(message: Message, token: dict = Depends(authenticate_user)):
-    # Add logic to create a new message using the authenticated user's Keycloak ID
-    pass
+async def send_message(message: MessageCreate, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
+    sender_id = token["sub"]
+    new_message = create_message(db, message, sender_id)
+    return Message.from_model(new_message)
 
 @router.get("/messages/{thread_id}", response_model=List[Message])
-async def get_messages(thread_id: UUID, token: dict = Depends(authenticate_user)):
-    # Add logic to retrieve messages for the authenticated user based on their Keycloak ID
-    pass
+async def get_messages_endpoint(thread_id: UUID, token: dict = Depends(authenticate_user), db: Session = Depends(get_db)):
+    user_id = token["sub"]
+    messages = get_messages(db, thread_id, user_id)
+    if messages is not None:
+        return [Message.from_model(message) for message in messages]
+    raise HTTPException(status_code=403, detail="Unauthorized to view messages in thread")
